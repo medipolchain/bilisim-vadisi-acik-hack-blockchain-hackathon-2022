@@ -1,107 +1,272 @@
 //SPDX-License-Identifier: MIT
+// Author: @woosal1337
+
 pragma solidity 0.8.0;
 
-contract ColdSupplyChain {
+/**
+ * @dev Contract module which includes the complete supply chain functionality
+ * and is used to simulate the supply chain.
+ *
+ * By default, the owner account will be the one that deploys the contract. This
+ * can later be changed with {transferOwnership}.
+ *
+ * This module is used through inheritance. It will make available the modifier
+ * `onlyOwner`, which can be applied to your functions to restrict their use to
+ * the owner.
+ */
+
+contract SupplyChain {
 
     address public owner;
 
-    struct Package {
-        address admin;
-        address currentCarrier;
-        string productName;
-        uint expirationDate;
-        bool deliveryDone;
-        address[] carriers;
-        uint[] timestamps;
-        uint carrierFinished;
-    }
-
     mapping(address => bool) public admins;
-    mapping(bytes32 => Package) public packages;
+    mapping(bytes32 => Product) public products;
 
-    event OwnerChanged(address indexed oldOwner, address indexed newOwner, uint timestamp);
-    event AdminAdded(address indexed admin, uint timestamp);
-    event AdminRemoved(address indexed admin, uint timestamp);
-    event NewPackageCreated(bytes32 packageId, address indexed admin, address indexed currentCarrier, string productName, uint expirationDate, address[] carriers, uint[] timestamps);
-    event PackageCarrierChange(address indexed oldCarrier, address indexed newCarrier, address indexed changedByAddress, uint timestamp);
-    event PackageArrived(bytes32 packageId, address currentCarrier, uint timestamp);
-    event PackageDeleted(bytes32 packageId, address indexed deletedBy, uint timestamp);
+    /**
+     * @dev Creates a package/delivery product details.
+     */
+    struct Product {
+        address _manufacturerAddress;
+        address _carrierWalletAddress;
+        string _productName;
+        uint _expirationDate;
+        bool _deliveryDone;
 
+    }
+
+    event OwnerChanged(
+        address indexed _previousOwner,
+        address indexed _newOwner
+    );
+
+    event AdminAdded(
+        address indexed _admin,
+        uint _timetstamp
+    );
+
+    event AdminRemoved(
+        address indexed _admin,
+        uint _timetstamp
+    );
+
+    event PackageCarrierChange(
+        address indexed _sender,
+        address indexed _to,
+        bytes32 _packageId,
+        uint _timestamp
+    );
+
+    event NewPackageCreated(
+        bytes32 _packageId,
+        uint _timestamp,
+        address carrierWalletAddress
+    );
+
+    event PackageArrived(
+        bytes32 _packageId,
+        uint _timestamp,
+        address _carrierWalletAddress
+    );
+
+    event TotalDelivered(
+        address _carrierWalletAddress,
+        uint _totalDelivered
+    );
+
+    event DeletePackage (
+        bytes32 _packageId,
+        address _deletedBy
+    );
+
+    /**
+     * @dev Initializes the contract setting the deployer as the initial owner.
+     */
     constructor() {
-        assert(owner != msg.sender);
-        
         owner = msg.sender;
-        emit OwnerChanged(0x0000000000000000000000000000000000000000, owner, block.timestamp);
+
+        emit OwnerChanged(0x0000000000000000000000000000000000000000, owner);
     }
 
-    
-    function addAdmin(address admin) public onlyOwner {
-        admins[admin] = true;
+    /**
+     * @dev Adds new Admin users to the {admins}.
+     *
+     * Emits {AdminAdded} event indicating the {Admin} and the timestamp.
+     *
+     * Requirements:
+     * - the caller must be the owner.
+     */
+    function addAdmin(
+        address _admin
+    ) public onlyOwner {
+        admins[_admin] = true;
 
-        emit AdminAdded(admin, block.timestamp);
+        emit AdminAdded(_admin, block.timestamp);
     }
 
-    function removeAdmin(address admin) public onlyOwner {
-        admins[admin] = false;
+    /**
+     * @dev Removes an Admin user from the {admins}.
+     *
+     * Emits {AdminRemoved} event indicating the {Admin} and the timestamp.
+     *
+     * Requirements:
+     * - the caller must be the {owner}.
+     */
+    function removeAdmin(
+        address _admin
+    ) public onlyOwner {
+        admins[_admin] = false;
 
-        emit AdminRemoved(admin, block.timestamp);
+        emit AdminRemoved(_admin, block.timestamp);
     }
 
-    function packageIdGenerator(address carrier) public view returns (bytes32) {
+    /**
+     * @dev Returns unique keccak256 hash combined with _carrierWalletAddress,
+     * block.timestamp.
+     */
+    function packageIdGenerator(
+        address _carrierWalletAddress
+    ) public view returns (bytes32) {
         return keccak256(abi.encodePacked(
-                carrier,
+                _carrierWalletAddress,
                 block.timestamp));
     }
-    
-    function transferOwnership(address newOwner) public onlyOwner {
-        address oldOwner = owner;
-        owner = newOwner;
 
-        emit OwnerChanged(oldOwner, newOwner, block.timestamp);
+    /**
+     * @dev Transfers ownership of the contract to a new account (`_owner`).
+     *
+     * Requirements:
+     * - the caller must be the {owner}.
+     *
+     * Emits {OwnerChanged} event indicating the previous owner and the
+     * new owner.
+     */
+    function transferOwnership(
+        address _owner
+    ) public onlyOwner {
+        owner = _owner;
+
+        emit OwnerChanged(msg.sender, _owner);
     }
 
-    function createDeliveryPackage(address currentCarrier, string memory productName, uint expirationDate, address[] memory carriers, uint[] memory timestamps) public onlyAdminOrOwner {
-        require(carriers.length >= 1, "No carrier was provided as an input! Add some carriers!");
-        require(carriers.length == timestamps.length, "The number of the carriers and their according timestamp lengths are different! Make sure you enter the same number of carriers and timestamps!");
+    /**
+     * @dev Creates and add the new package/delivery with the {Product} struct
+     * to the {products} mapping.
+     *
+     * Requirements:
+     * - the caller must be an {admin} or {owner}.
+     *
+     * Emits {NewPackageCreated} event indicating the {packageId}, {timestamp},
+     * and {carrierWalletAddress}.
+     */
+    function createDeliveryPackage(
+        address _manufacturerAddress,
+        address _carrierWalletAddress,
+        string memory _productName,
+        uint _expirationDate,
+        bool _deliveryDone
+    ) onlyAdminOrOwner public {
+        bytes32 _packageId = packageIdGenerator(msg.sender);
+        products[_packageId]._manufacturerAddress = _manufacturerAddress;
+        products[_packageId]._carrierWalletAddress = _carrierWalletAddress;
+        products[_packageId]._productName = _productName;
+        products[_packageId]._expirationDate = _expirationDate;
+        products[_packageId]._deliveryDone = _deliveryDone;
 
-        bytes32 packageId = packageIdGenerator(carriers[0]);
-
-        packages[packageId].admin = msg.sender;
-        packages[packageId].currentCarrier = currentCarrier;
-        packages[packageId].productName = productName;
-        packages[packageId].expirationDate = expirationDate;
-        packages[packageId].carriers = carriers;
-        packages[packageId].timestamps = timestamps;
-
-        emit NewPackageCreated(packageId, msg.sender, currentCarrier, productName, expirationDate, carriers, timestamps);
+        emit NewPackageCreated(
+            _packageId,
+            block.timestamp,
+            _carrierWalletAddress);
     }
 
-    function changePackageCarrier(bytes32 packageId, address newCarrierAddress) public {
-        require(packages[packageId].currentCarrier == msg.sender || packages[packageId].admin == msg.sender || msg.sender == owner, "You do not have an access to edit the carrier address of this package!");
+    /**
+     * @dev Changes the {carrierWalletAddress} saved in the {products} mapping.
+     *
+     * Requirements:
+     * - the caller must be the current {carrierWalletAddress} of the
+     * {packageId} package.
+     *
+     * Emits {PackageCarrierChange} event indicating the old
+     * {carrierWalletAddress} and the new {carrierWalletAddress} for the
+     * {packageId} package.
+     */
+    function changePackageCarrier(bytes32 _packageId, address _newCarrier) public {
+        require(msg.sender == products[_packageId]._carrierWalletAddress || msg.sender == products[_packageId]._manufacturerAddress,
+            "You are not the current Carrier of this product!");
 
-        address oldCarrier = packages[packageId].currentCarrier;
-        packages[packageId].currentCarrier = newCarrierAddress;
-        packages[packageId].carrierFinished += 1;
+        products[_packageId]._carrierWalletAddress = _newCarrier;
 
-        emit PackageCarrierChange(oldCarrier, newCarrierAddress, msg.sender, block.timestamp);
+        emit PackageCarrierChange(
+            msg.sender,
+            _newCarrier,
+            _packageId,
+            block.timestamp);
     }
 
-    function deleteDeliveryPackage(bytes32 packageId) public {
-        require(packages[packageId].admin == msg.sender, "You are not the admin of this package!");
+    /**
+     * @dev Changes the {carrierWalletAddress} saved in the {products} mapping
+     * indicating that package has been successfully delivered to the final
+     * destination.
+     *
+     * Requirements:
+     * - the caller must be the current {carrierWalletAddress} of the
+     * {packageId} package.
+     *
+     * Emits {PackageArrived} event indicating that {packageId} package has been
+     * successfully delivered to the final destination.
+     *
+     * Note:
+     * - the {carrierWalletAddress} is changed to the {owner} address.
+     */
+    function packageArrived(bytes32 _packageId) public {
+        require(msg.sender == products[_packageId]._carrierWalletAddress,
+            "You are not the current Carrier of this product!");
 
-        delete packages[packageId];
+        products[_packageId]._deliveryDone = true;
+        products[_packageId]._carrierWalletAddress = owner;
 
-        emit PackageDeleted(packageId, msg.sender, block.timestamp);
+        emit PackageArrived(
+            _packageId,
+            block.timestamp,
+            msg.sender
+        );
     }
 
 
+    /**
+     * @dev Deletes the {_packageId} saved in the {products} mapping.
+     *
+     * Requirements:
+     * - the caller must be the current {_manufacturerAddress} of the
+     * {packageId} package.
+     *
+     * Emits {DeletePackage} event indicating that {packageId} package has been
+     * successfully deleted from the {products}.
+     *
+     */
+    function deletePackage(bytes32 _packageId) public {
+        require(msg.sender == products[_packageId]._manufacturerAddress, "You do not have permission do delete this package!");
+
+        delete products[_packageId];
+
+        emit DeletePackage(_packageId, msg.sender);
+    }
+
+
+    /**
+     * @dev Throws if called by any account other than the owner.
+     */
     modifier onlyOwner() {
-        require(owner == msg.sender, "You are not the owner!");
+        require(owner == msg.sender,
+            "You are not the Owner!");
         _;
     }
 
+    /**
+     * @dev Throws if called by any account other than the admin or owner.
+     */
     modifier onlyAdminOrOwner() {
-        require(admins[msg.sender] == true || owner == msg.sender, "You are not an admin or the owner!");
+        require(admins[msg.sender] == true || msg.sender == owner,
+            "You are not the Admin!");
         _;
     }
 
