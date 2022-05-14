@@ -16,6 +16,36 @@ const { JWT_SECRET } = require("../config/index");
 
 // web3
 const Web3 = require("web3");
+const { auth } = require("../middleware/auth");
+
+// GET /api/user/:publicAddress/info
+router.get("/user/:publicAddress", async (req, res) => {
+  let publicAddress = req.user.publicAddress;
+  console.log(publicAddress);
+  User.findOne({ publicAddress }, (err, user) => {
+    if (err) {
+      console.log(err);
+      res.status(500).json({
+        message: "Internal Server Error",
+        error: err,
+      });
+    }
+
+    console.log("user", user);
+    //   if (!user) {
+    //     res.status(404).json({
+    //       message: "User not found",
+    //       error: "Internal server error",
+    //     });
+    //   }
+
+    //   res.status(200).json({
+    //     message: "User found",
+    //     user,
+    //   });
+    res.send("XD");
+  });
+});
 
 // POST /api/user
 router.post("/", async (req, res) => {
@@ -76,13 +106,13 @@ router.get("/:publicAddress", async (req, res) => {
 });
 
 // POST /api/user/:publicAddress/signature
-router.post("/:publicAddress/signature", async (req, res) => {
+router.post("/:publicAddress/signature", (req, res) => {
   const { publicAddress } = req.params;
 
   try {
     let { signature } = req.body;
 
-    User.findOne({ publicAddress }, (err, user) => {
+    User.findOne({ publicAddress }, async (err, user) => {
       if (err) {
         res.status(500).json({
           message: "Internal Server Error",
@@ -111,23 +141,11 @@ router.post("/:publicAddress/signature", async (req, res) => {
       ) {
         // Create new user nonce and save it to database
         user.nonce = parseInt(Math.random() * 1000);
-        user.save((err, user) => {
-          if (err) {
-            res.status(500).json({
-              message: "Internal Server Error",
-              error: err,
-            });
-          } else {
-            res.status(201).json({
-              message: "User created",
-              user,
-            });
-          }
-        });
+        await user.save();
 
         // Create JWT
         const token = jwt.sign({ publicAddress }, JWT_SECRET, {
-          expiresIn: "1h",
+          expiresIn: "1w",
         });
 
         res.status(200).json({

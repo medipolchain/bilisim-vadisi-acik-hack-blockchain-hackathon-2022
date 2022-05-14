@@ -15,7 +15,21 @@ export default function Home() {
   const { account } = useAccount();
   const { connect, web3 } = useWeb3();
 
+  // States
+  const [information, setInformation] = React.useState(null);
+
   React.useEffect(() => {
+    const getInformation = async () => {
+      const c = await web3.eth.getCoinbase();
+      const response = await axiosClient.get(`/user/${c}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
+
+      setInformation(response.data.user);
+    };
+
     const handleSignMessage = async ({ publicAddress, nonce }) => {
       let sig = await web3.eth.personal.sign(
         web3.utils.fromUtf8(
@@ -50,11 +64,9 @@ export default function Home() {
           publicAddress: address,
         })
         .then((res) => {
-          console.log(res);
           let publicAddress = res.data.user.publicAddress;
           let nonce = res.data.user.nonce;
-          console.log(publicAddress);
-          console.log(nonce);
+
           handleSignMessage({ publicAddress, nonce });
         });
     };
@@ -65,25 +77,24 @@ export default function Home() {
 
       await axiosClient
         .get(`/user/${c}`)
+        .then((resp) => {
+          let publicAddress = resp.data.user.publicAddress;
+          let nonce = resp.data.user.nonce;
+
+          let jwt = localStorage.getItem("access_token");
+
+          if (!jwt) {
+            handleSignMessage({ publicAddress, nonce });
+          } else {
+            getInformation();
+          }
+        })
         .catch((err) => {
           let errorMessage = err.response.data.message;
           console.log(errorMessage);
           if (errorMessage === "User not found") {
             handleSignUp(c);
           }
-          console.log(err);
-        })
-        .then((resp) => {
-          // let publicAddress = resp.data.user.publicAddress;
-          // let nonce = resp.data.user.nonce;
-
-          // let jwt = localStorage.getItem("access_token");
-          // console.log(jwt);
-
-          // if (!jwt) {
-          //   handleSignMessage({ publicAddress, nonce });
-          // }
-          console.log(resp);
         });
     };
 
@@ -93,7 +104,7 @@ export default function Home() {
   return (
     <div className="container mx-auto flex p-10">
       {/* Main Card */}
-      <div className="shadow-2xl border-sm mt-20 flex w-11/12 h-20 mx-20 bg-green-500 justify-around">
+      <div className="shadow-2xl border-sm mt-20 flex w-full h-20 mx-20 bg-green-500 justify-around">
         <p className="text-2xl font-bold text-right montserrat my-auto">
           Welcome to the Supply Chain System
         </p>
@@ -102,6 +113,7 @@ export default function Home() {
           connect={connect}
           web3={web3}
           style={{ marginTop: "auto", marginBottom: "auto" }}
+          information={information}
         />
       </div>
     </div>

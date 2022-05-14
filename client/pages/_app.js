@@ -4,6 +4,9 @@ import "../styles/globals.css";
 import { Web3Provider } from "../components/providers";
 import Layout from "components/ui/Layout";
 
+// Bootstrap
+import "bootstrap/dist/css/bootstrap.min.css";
+
 function MyApp({ Component, pageProps }) {
   return (
     <Web3Provider>
