@@ -8,14 +8,16 @@ import Web3 from "web3";
 
 // Setup Hooks
 import { setupHooks } from "./hooks/setupHooks";
+import { loadContract } from "utils/loadContract";
 
 const Web3Context = React.createContext(null);
 
-const createWeb3State = ({ web3, provider, isLoading }) => {
+const createWeb3State = ({ web3, provider, isLoading, contract }) => {
   return {
     web3,
     provider,
     isLoading,
+    contract,
     hooks: setupHooks(web3, provider),
   };
 };
@@ -26,6 +28,7 @@ export default function Web3Provider({ children }) {
       web3: null,
       provider: null,
       isLoading: true,
+      contract: null,
     })
   );
 
@@ -35,11 +38,13 @@ export default function Web3Provider({ children }) {
 
       if (provider) {
         const web3 = new Web3(provider);
+        const contract = await loadContract("SupplyChain", web3);
         setWeb3Api(
           createWeb3State({
             web3,
             provider,
             isLoading: false,
+            contract,
           })
         );
       } else {

@@ -1,4 +1,5 @@
 //SPDX-License-Identifier: MIT
+<<<<<<< Updated upstream
 // Author: @woosal1337
 
 pragma solidity 0.8.0;
@@ -32,6 +33,22 @@ contract SupplyChain {
         uint _expirationDate;
         bool _deliveryDone;
 
+=======
+pragma solidity ^0.8.4;
+
+contract ColdSupplyChain {
+    address public owner;
+
+    struct Package {
+        address admin;
+        address currentCarrier;
+        string productName;
+        uint256 expirationDate;
+        bool deliveryDone;
+        address[] carriers;
+        uint256[] timestamps;
+        uint256 carrierFinished;
+>>>>>>> Stashed changes
     }
 
     event OwnerChanged(
@@ -56,10 +73,44 @@ contract SupplyChain {
         uint _timestamp
     );
 
+<<<<<<< Updated upstream
     event NewPackageCreated(
         bytes32 _packageId,
         uint _timestamp,
         address carrierWalletAddress
+=======
+    event OwnerChanged(
+        address indexed oldOwner,
+        address indexed newOwner,
+        uint256 timestamp
+    );
+    event AdminAdded(address indexed admin, uint256 timestamp);
+    event AdminRemoved(address indexed admin, uint256 timestamp);
+    event NewPackageCreated(
+        bytes32 packageId,
+        address indexed admin,
+        address indexed currentCarrier,
+        string productName,
+        uint256 expirationDate,
+        address[] carriers,
+        uint256[] timestamps
+    );
+    event PackageCarrierChange(
+        address indexed oldCarrier,
+        address indexed newCarrier,
+        address indexed changedByAddress,
+        uint256 timestamp
+    );
+    event PackageArrived(
+        bytes32 packageId,
+        address currentCarrier,
+        uint256 timestamp
+    );
+    event PackageDeleted(
+        bytes32 packageId,
+        address indexed deletedBy,
+        uint256 timestamp
+>>>>>>> Stashed changes
     );
 
     event PackageArrived(
@@ -82,6 +133,7 @@ contract SupplyChain {
      * @dev Initializes the contract setting the deployer as the initial owner.
      */
     constructor() {
+<<<<<<< Updated upstream
         owner = msg.sender;
 
         emit OwnerChanged(0x0000000000000000000000000000000000000000, owner);
@@ -99,6 +151,20 @@ contract SupplyChain {
         address _admin
     ) public onlyOwner {
         admins[_admin] = true;
+=======
+        assert(owner != msg.sender);
+
+        owner = msg.sender;
+        emit OwnerChanged(
+            0x0000000000000000000000000000000000000000,
+            owner,
+            block.timestamp
+        );
+    }
+
+    function addAdmin(address admin) public onlyOwner {
+        admins[admin] = true;
+>>>>>>> Stashed changes
 
         emit AdminAdded(_admin, block.timestamp);
     }
@@ -119,6 +185,7 @@ contract SupplyChain {
         emit AdminRemoved(_admin, block.timestamp);
     }
 
+<<<<<<< Updated upstream
     /**
      * @dev Returns unique keccak256 hash combined with _carrierWalletAddress,
      * block.timestamp.
@@ -130,6 +197,15 @@ contract SupplyChain {
                 _carrierWalletAddress,
                 block.timestamp));
     }
+=======
+    function packageIdGenerator(address carrier) public view returns (bytes32) {
+        return keccak256(abi.encodePacked(carrier, block.timestamp));
+    }
+
+    function transferOwnership(address newOwner) public onlyOwner {
+        address oldOwner = owner;
+        owner = newOwner;
+>>>>>>> Stashed changes
 
     /**
      * @dev Transfers ownership of the contract to a new account (`_owner`).
@@ -148,6 +224,7 @@ contract SupplyChain {
         emit OwnerChanged(msg.sender, _owner);
     }
 
+<<<<<<< Updated upstream
     /**
      * @dev Creates and add the new package/delivery with the {Product} struct
      * to the {products} mapping.
@@ -177,6 +254,23 @@ contract SupplyChain {
             block.timestamp,
             _carrierWalletAddress);
     }
+=======
+    function createDeliveryPackage(
+        address currentCarrier,
+        string memory productName,
+        uint256 expirationDate,
+        address[] memory carriers,
+        uint256[] memory timestamps
+    ) public onlyAdminOrOwner {
+        require(
+            carriers.length >= 1,
+            "No carrier was provided as an input! Add some carriers!"
+        );
+        require(
+            carriers.length == timestamps.length,
+            "The number of the carriers and their according timestamp lengths are different! Make sure you enter the same number of carriers and timestamps!"
+        );
+>>>>>>> Stashed changes
 
     /**
      * @dev Changes the {carrierWalletAddress} saved in the {products} mapping.
@@ -195,6 +289,7 @@ contract SupplyChain {
 
         products[_packageId]._carrierWalletAddress = _newCarrier;
 
+<<<<<<< Updated upstream
         emit PackageCarrierChange(
             msg.sender,
             _newCarrier,
@@ -220,10 +315,33 @@ contract SupplyChain {
     function packageArrived(bytes32 _packageId) public {
         require(msg.sender == products[_packageId]._carrierWalletAddress,
             "You are not the current Carrier of this product!");
+=======
+        emit NewPackageCreated(
+            packageId,
+            msg.sender,
+            currentCarrier,
+            productName,
+            expirationDate,
+            carriers,
+            timestamps
+        );
+    }
+
+    function changePackageCarrier(bytes32 packageId, address newCarrierAddress)
+        public
+    {
+        require(
+            packages[packageId].currentCarrier == msg.sender ||
+                packages[packageId].admin == msg.sender ||
+                msg.sender == owner,
+            "You do not have an access to edit the carrier address of this package!"
+        );
+>>>>>>> Stashed changes
 
         products[_packageId]._deliveryDone = true;
         products[_packageId]._carrierWalletAddress = owner;
 
+<<<<<<< Updated upstream
         emit PackageArrived(
             _packageId,
             block.timestamp,
@@ -231,6 +349,21 @@ contract SupplyChain {
         );
     }
 
+=======
+        emit PackageCarrierChange(
+            oldCarrier,
+            newCarrierAddress,
+            msg.sender,
+            block.timestamp
+        );
+    }
+
+    function deleteDeliveryPackage(bytes32 packageId) public {
+        require(
+            packages[packageId].admin == msg.sender,
+            "You are not the admin of this package!"
+        );
+>>>>>>> Stashed changes
 
     /**
      * @dev Deletes the {_packageId} saved in the {products} mapping.
@@ -251,10 +384,13 @@ contract SupplyChain {
         emit DeletePackage(_packageId, msg.sender);
     }
 
+<<<<<<< Updated upstream
 
     /**
      * @dev Throws if called by any account other than the owner.
      */
+=======
+>>>>>>> Stashed changes
     modifier onlyOwner() {
         require(owner == msg.sender,
             "You are not the Owner!");
@@ -265,9 +401,15 @@ contract SupplyChain {
      * @dev Throws if called by any account other than the admin or owner.
      */
     modifier onlyAdminOrOwner() {
+<<<<<<< Updated upstream
         require(admins[msg.sender] == true || msg.sender == owner,
             "You are not the Admin!");
+=======
+        require(
+            admins[msg.sender] == true || owner == msg.sender,
+            "You are not an admin or the owner!"
+        );
+>>>>>>> Stashed changes
         _;
     }
-
 }
