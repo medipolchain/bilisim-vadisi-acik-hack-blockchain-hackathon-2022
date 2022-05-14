@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Author: @woosal1337
 
-pragma solidity 0.8.0;
+pragma solidity ^0.8.0;
 
 /**
  * @dev Contract module which includes the complete supply chain functionality
@@ -18,6 +18,7 @@ pragma solidity 0.8.0;
 contract SupplyChain {
     address public owner;
 
+    mapping(address => Product[]) public userProducts;
     mapping(address => bool) public admins;
     mapping(bytes32 => Product) public products;
 
@@ -155,6 +156,8 @@ contract SupplyChain {
         products[_packageId]._productName = _productName;
         products[_packageId]._expirationDate = _expirationDate;
         products[_packageId]._deliveryDone = _deliveryDone;
+
+        userProducts[msg.sender].push(products[_packageId]);
 
         emit NewPackageCreated(
             _packageId,
