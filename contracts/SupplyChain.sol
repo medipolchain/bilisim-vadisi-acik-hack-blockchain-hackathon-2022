@@ -56,6 +56,7 @@ contract SupplyChain {
 
     event NewPackageCreated(
         bytes32 _packageId,
+        address _admin,
         address _currentCarrier,
         uint _timestamp
     );
@@ -170,6 +171,7 @@ contract SupplyChain {
 
         emit NewPackageCreated(
             _packageId,
+            msg.sender,
             _currentCarrier,
             block.timestamp
         );
@@ -215,8 +217,8 @@ contract SupplyChain {
      * - the {currentCarrier} is changed to the {owner} address.
      */
     function packageArrived(bytes32 _packageId) public {
-        require(msg.sender == products[_packageId]._currentCarrier,
-            "You are not the current Carrier of this product!");
+        require(msg.sender == products[_packageId]._currentCarrier || msg.sender == products[_packageId]._admin,
+            "You are not the current Carrier nor the Admin of this product!");
 
         products[_packageId]._deliveryDone = true;
         products[_packageId]._currentCarrier = owner;
