@@ -39,12 +39,12 @@ contract SupplyChain {
 
     event AdminAdded(
         address indexed _admin,
-        uint _timetstamp
+        uint _timestamp
     );
 
     event AdminRemoved(
         address indexed _admin,
-        uint _timetstamp
+        uint _timestamp
     );
 
     event PackageCarrierChange(
@@ -75,6 +75,20 @@ contract SupplyChain {
     event TemperatureViolated(
         bytes32 _packageId,
         address indexed _currentCarrier,
+        uint _timestamp
+    );
+
+    event SetPackageAdmin(
+        bytes32 _packageId,
+        address _oldAdmin,
+        address _newAdmin,
+        uint _timestamp
+    );
+
+    event SetPackageDeliveryDoneOrUndone(
+        bytes32 _packageId,
+        bool _previousDeliveryStatus,
+        bool _newDeliveryStatus,
         uint _timestamp
     );
 
@@ -227,11 +241,73 @@ contract SupplyChain {
      *
      */
     function deletePackage(bytes32 _packageId) public {
-        require(msg.sender == products[_packageId]._currentCarrier, "You do not have permission do delete this package!");
+        require(msg.sender == products[_packageId]._admin || msg.sender == owner, 
+            "You do not have permission do delete this package!");
 
         delete products[_packageId];
 
         emit DeletePackage(_packageId, msg.sender, block.timestamp);
+    }
+
+    /**
+     * @dev Gets the {currentCarrier} argument in the {products} mapping struct.
+     */
+    function getPackageCurrentCarrier(bytes32 _packageId) public view returns (address) {
+        return products[_packageId]._currentCarrier;
+    }
+
+    /**
+     * @dev Gets the {admin} argument in the {products} mapping struct.
+     */
+    function getPackageAdmin(bytes32 _packageId) public view returns (address) {
+        return products[_packageId]._admin;
+    }
+
+    /**
+     * @dev Gets the {packageDelivery} argument in the {products} mapping struct.
+     */
+    function getPackageDeliveryDone(bytes32 _packageId) public view returns (bool) {
+        return products[_packageId]._deliveryDone;
+    }
+
+    /**
+     * @dev Sets the {admin} argument in the {products} mapping struct.
+     *
+     * Requirements:
+     * - the caller must be the owner.
+     *
+     * Emits {SetPackageAdmin} event indicating that the {admin} of {packageId} package 
+     * has been successfully changed to {_newAdmin}.
+     *
+     */
+    function setPackageAdmin(bytes32 _packageId, address _newAdmin) public onlyOwner {
+        address _oldAdmin = products[_packageId]._admin;
+        products[_packageId]._admin = _newAdmin;
+
+        emit SetPackageAdmin(_packageId, _oldAdmin, _newAdmin, block.timestamp);
+    }
+
+    /**
+     * @dev Sets the {deliveryDone} argument in the {products} mapping struct.
+     *
+     * Requirements:
+     * - the caller must be an admin or the owner.
+     *
+     *
+     * Emits {SetPackageDeliveryDoneOrUndone} event indicating that the {deliveryDone} of {packageId} package 
+     * has been successfully changed to false if was true, and true if was false.
+     */
+    function setPackageDeliveryDoneOrUndone(bytes32 _packageId) public onlyAdminOrOwner {
+        bool _oldDeliveryDone = products[_packageId]._deliveryDone;
+
+        // Case of _oldDeliveryDone == true
+        if (_oldDeliveryDone) {
+            products[_packageId]._deliveryDone = false;
+        } else { // Case of _oldDeliveryDone == false
+            products[_packageId]._deliveryDone = true;
+        }
+
+        emit SetPackageDeliveryDoneOrUndone(_packageId, _oldDeliveryDone, !_oldDeliveryDone, block.timestamp);
     }
 
     /**
