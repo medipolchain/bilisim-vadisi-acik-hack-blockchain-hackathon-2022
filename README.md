@@ -1,6 +1,8 @@
 <div align="center">
 <img src="src/cold-chain-logo.png" width=25% />
+</div>
 
+<div align="center">
 <img src="https://img.shields.io/badge/license-MIT-blue?style=for-the-badge&logo=appveyor">
 <img src="https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=Ethereum&logoColor=white" />
 <img src="https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white" />
@@ -12,7 +14,8 @@
 <img src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" />
 <img src="https://img.shields.io/badge/Solidity-%23363636.svg?style=for-the-badge&logo=solidity&logoColor=white" />
 <img src="https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white" />
-
+</div>
+	
 <h1>❄ Soğuk Tedarik Zinciri</h1>
 <h3>Eczane/ilaç hırsızlığının, nakliye sırasında sıcaklık sapmalarının kaçınılmaz olduğu merkezi veritabanı sistemlerini çözmeye adanmış basit, şeffaf, fakat aynı zamanda verimli tamamen merkeziyetsiz soğuk tedarik zinciri.</h3>
 </div>
