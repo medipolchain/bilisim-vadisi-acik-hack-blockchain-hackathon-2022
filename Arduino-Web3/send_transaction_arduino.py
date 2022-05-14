@@ -2,11 +2,14 @@ import sys
 # Importing Libraries
 from serial import Serial
 from web3 import Web3
+from dotenv import dotenv_values
 
 arduino = Serial(port='COM3', baudrate=9600, timeout=.1)
 
 
 def trigger():
+    config = dotenv_values('.env')
+    print(config['PRIVATE_KEY'])
     w3 = Web3(Web3.HTTPProvider("https://api.avax-test.network/ext/bc/C/rpc"))
 
     abi = '''[
@@ -544,7 +547,7 @@ def trigger():
     '''
     contractAddress = "0x5B4CfE32E5afae0683F77F64B76B3D8890a9A974"
 
-    private_key = 0x3840514dc62b07a4ed3946cb948cd60fde4c1664c0e51dadd324ea9347fd21b4
+    private_key = config['PRIVATE_KEY']
 
     contract = w3.eth.contract(
         address=contractAddress,
