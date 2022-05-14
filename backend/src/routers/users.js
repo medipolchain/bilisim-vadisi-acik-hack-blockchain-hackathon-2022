@@ -18,6 +18,41 @@ const { JWT_SECRET } = require("../config/index");
 const Web3 = require("web3");
 const { auth } = require("../middleware/auth");
 
+// POST /api/settings
+router.post("/settings", auth, async (req, res) => {
+  let isChecked, input;
+
+  try {
+    isChecked = req.body.isChecked;
+    input = req.body.input;
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      message: "Bad Request",
+      error: "Internal server error",
+    });
+  }
+
+  const us = await User.findOne({ publicAddress: req.user.publicAddress });
+
+  if (!us) {
+    res.status(404).json({
+      message: "User not found",
+      error: "Internal server error",
+    });
+  }
+
+  us.notification = isChecked;
+  us.email = input.trim();
+
+  await us.save();
+
+  res.status(200).json({
+    message: "User settings updated",
+    user: us,
+  });
+});
+
 // GET /api/user/:publicAddress/info
 router.get("/user/:publicAddress", async (req, res) => {
   let publicAddress = req.user.publicAddress;
