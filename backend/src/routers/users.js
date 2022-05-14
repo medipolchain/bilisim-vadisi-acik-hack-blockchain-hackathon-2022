@@ -66,19 +66,17 @@ router.get("/user/:publicAddress", async (req, res) => {
       });
     }
 
-    console.log("user", user);
-    //   if (!user) {
-    //     res.status(404).json({
-    //       message: "User not found",
-    //       error: "Internal server error",
-    //     });
-    //   }
+    if (!user) {
+      res.status(404).json({
+        message: "User not found",
+        error: "Internal server error",
+      });
+    }
 
-    //   res.status(200).json({
-    //     message: "User found",
-    //     user,
-    //   });
-    res.send("XD");
+    res.status(200).json({
+      message: "User found",
+      user,
+    });
   });
 });
 

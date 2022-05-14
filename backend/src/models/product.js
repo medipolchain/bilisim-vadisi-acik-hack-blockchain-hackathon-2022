@@ -12,7 +12,7 @@ const productSchema = new mongoose.Schema({
     trim: true,
   },
   expirationDate: {
-    type: Date,
+    type: Number,
     required: true,
   },
   name: {
@@ -20,20 +20,27 @@ const productSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  allCarriers: [
-    {
-      address: {
-        type: String,
-        required: true,
-      },
-      timestamp: {
-        type: Number,
-        required: true,
-      },
-    },
-  ],
+  allCarriers: {
+    type: Array,
+    required: false,
+  },
+  problem: {
+    type: Array,
+    required: false,
+  },
+  packageID: {
+    type: String,
+    required: false,
+    trim: true,
+    default: "",
+  },
+  isFinished: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
 });
 
-const Products = mongoose.model("Products", productSchema);
+const Product = mongoose.model("Product", productSchema);
 
-module.export = Products;
+module.exports = Product;

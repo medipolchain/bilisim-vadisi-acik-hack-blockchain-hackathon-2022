@@ -13,10 +13,11 @@ import { axiosClient } from "utils/axiosClient";
 export default function Home() {
   // Hooks Initialization
   const { account } = useAccount();
-  const { connect, web3 } = useWeb3();
+  const { connect, web3, contract } = useWeb3();
 
   // States
   const [information, setInformation] = React.useState(null);
+  const [isAdmin, setIsAdmin] = React.useState(false);
 
   React.useEffect(() => {
     const getInformation = async () => {
@@ -101,21 +102,38 @@ export default function Home() {
     if (account?.data && web3) handleLogIn();
   }, [account?.data, web3]);
 
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const c = await contract.methods.admins(account?.data).call();
+      setIsAdmin(c);
+    };
+
+    if (account?.data && web3 && contract) fetchData();
+  }, [account?.data, web3, contract]);
   return (
-    <div className="container mx-auto flex p-10">
-      {/* Main Card */}
-      <div className="shadow-2xl border-sm mt-20 flex w-full h-20 mx-20 bg-green-500 justify-around">
-        <p className="text-2xl font-bold text-right montserrat my-auto">
-          Welcome to the Supply Chain System
-        </p>
-        <ConnectButton
-          account={account}
-          connect={connect}
-          web3={web3}
-          style={{ marginTop: "auto", marginBottom: "auto" }}
-          information={information}
-        />
+    <>
+      <div className="container mx-auto flex m-10 flex-col">
+        {/* Main Card */}
+        <div className="shadow-2xl border-sm mt-20 flex w-full h-20 rounded-lg justify-around">
+          <p className="text-2xl font-bold text-right montserrat my-auto">
+            Welcome to the Supply Chain System
+          </p>
+          <ConnectButton
+            account={account}
+            connect={connect}
+            web3={web3}
+            style={{ marginTop: "auto", marginBottom: "auto" }}
+            information={information}
+          />
+        </div>
+        {!isAdmin ? (
+          <div className="w-60 flex justify-center bg-blue-800 text-white rounded-md">
+            <span className="montserrat tracking-wider text-2xl my-8">
+              Create Product
+            </span>
+          </div>
+        ) : null}
       </div>
-    </div>
+    </>
   );
 }

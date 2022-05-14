@@ -2,8 +2,8 @@ import React from "react";
 import useSWR from "swr";
 
 // const targetNetwork = 43114; // Mainnet
-// const targetNetwork = 43113; // FUJI Testnet
-const targetNetwork = 1337; // Ganache
+const targetNetwork = 43113; // FUJI Testnet
+// const targetNetwork = 1337; // Ganache
 
 export const handler = (web3, provider) => () => {
   const { data, mutate, ...rest } = useSWR(
