@@ -123,6 +123,9 @@ modifier onlyAdminOrOwner() x
 ```
 
 ## 📸 Ekran görüntüleri
+![Screen Shot 2022-05-15 at 07 57 42](https://user-images.githubusercontent.com/77115599/168457954-aa163517-c0e9-4f16-b109-37635dbcf6b1.jpg)
+![Screen Shot 2022-05-15 at 07 58 22](https://user-images.githubusercontent.com/77115599/168457955-df9f0f20-0e61-4176-962e-2b74990179b7.jpg)
+![Screen Shot 2022-05-15 at 07 58 33](https://user-images.githubusercontent.com/77115599/168457956-82b8e49f-4060-448b-b32c-604f30ddb82f.jpg)
 
 ## 🎥 Ekran kaydı
 
