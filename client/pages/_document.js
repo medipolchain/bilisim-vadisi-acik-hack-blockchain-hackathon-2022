@@ -17,6 +17,7 @@ class MyDocument extends Document {
             href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;400;700&display=swap"
             rel="stylesheet"
           />
+          <script src="https://unpkg.com/flowbite@1.4.5/dist/datepicker.js"></script>
         </Head>
         <body>
           <Main />

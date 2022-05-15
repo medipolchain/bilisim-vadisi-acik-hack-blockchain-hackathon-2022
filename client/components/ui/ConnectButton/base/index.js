@@ -12,7 +12,7 @@ import { RiErrorWarningLine } from "react-icons/ri";
 // Settings Modal
 import { SettingsModal } from "components/ui/SettingsModal";
 
-const ConnectButton = ({ account, connect, style, information }) => {
+const ConnectButton = ({ account, connect, className, information }) => {
   const [inProgress, setInProgress] = React.useState(false);
   const [show, setShow] = React.useState(false);
 
@@ -32,27 +32,28 @@ const ConnectButton = ({ account, connect, style, information }) => {
   }, [information]);
 
   return (
-    <div className="flex float-left">
+    <div className="flex">
       <SettingsModal show={show} onHide={() => setShow(false)} />
-      <div style={style}>
-        <span
-          className={`bg-zinc-800 inline-flex items-center p-3 my-auto montserrat justify-center text-white rounded-md text-sm hover:ring-4 ring-zinc-400 transition duration-700 w-56 ${
-            account?.data ? " cursor-default" : "cursor-pointer"
-          }`}
-          onClick={handleClick}
-        >
+      <div className={className}>
+        <span onClick={handleClick} className="flex justify-center montserrat">
           {account?.data ? (
-            <>
+            <span className="font-bold">
               {String(account.data).slice(0, 10)}...
-              {String(account.data).slice(-6)}
-            </>
+              {String(account.data).slice(-10)}
+            </span>
           ) : inProgress ? (
             "In Progress..."
           ) : (
-            <>
+            <div
+              className="mx-auto w-96 montserrat font-bold"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
               <MetamaskSVG />
               Connect with Metamask
-            </>
+            </div>
           )}
         </span>
       </div>

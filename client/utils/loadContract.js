@@ -11,7 +11,7 @@ export const loadContract = async (name, web3) => {
     contract = new web3.eth.Contract(
       Artifacts,
       // Artifacts.networks[networkID].address
-      "0x690d2CaFF4560e19524EF81077b21D21c4AaBC87"
+      "0x681742F2CBC82435374Dd7F58b6143BA9C389aF8"
     );
 
     console.log(`Contract ${name} loaded`);
