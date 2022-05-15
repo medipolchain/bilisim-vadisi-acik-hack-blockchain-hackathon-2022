@@ -554,8 +554,6 @@ def trigger():
         abi=abi
     )
 
-    print(contract.functions.owner().call())
-
     nonce = w3.eth.get_transaction_count("0x9b3C59daa631807e9Eb80f473751cA6E8A3F5345")
 
     tx_data = {}
@@ -579,15 +577,16 @@ def main():
 
     while True:
         data = arduino.readline()
-        data = data.decode("utf-8")
-
+        data = data.decode("utf-8") 
+        
         if data:
             data = float(data)
-            print(data)
+            print("%.2f" % (data-22.0))
 
-            if data >= 32.0:
+            # 2-8 C degree simulation (default is around 26 C)
+            if data-22.0 >= 10.0:
                 trigger()
-                sys.exit()
+                sys.exit() 
 
 
 if __name__ == "__main__":
