@@ -123,11 +123,14 @@ modifier onlyAdminOrOwner() x
 ```
 
 ## 📸 Ekran görüntüleri
-![Screen Shot 2022-05-15 at 07 57 42](https://user-images.githubusercontent.com/77115599/168457954-aa163517-c0e9-4f16-b109-37635dbcf6b1.jpg)
-![Screen Shot 2022-05-15 at 07 58 22](https://user-images.githubusercontent.com/77115599/168457955-df9f0f20-0e61-4176-962e-2b74990179b7.jpg)
-![Screen Shot 2022-05-15 at 07 58 33](https://user-images.githubusercontent.com/77115599/168457956-82b8e49f-4060-448b-b32c-604f30ddb82f.jpg)
+||||
+| ------------- | ------------- | ------------- |
+|![Screen Shot 2022-05-15 at 07 57 42](https://user-images.githubusercontent.com/77115599/168457954-aa163517-c0e9-4f16-b109-37635dbcf6b1.jpg)|![Screen Shot 2022-05-15 at 07 58 22](https://user-images.githubusercontent.com/77115599/168457955-df9f0f20-0e61-4176-962e-2b74990179b7.jpg)|![Screen Shot 2022-05-15 at 07 58 33](https://user-images.githubusercontent.com/77115599/168457956-82b8e49f-4060-448b-b32c-604f30ddb82f.jpg)|
 
 ## 🎥 Ekran kaydı
+|Metamask Connection and Admin Panel Transition|Create Product Through Admin Panel|Mail Notification Subscription|Heat Sensor and Blockchain Transaction IoT|
+| ------------- | ------------- | ------------- | ------------- |
+|[![Watch the video](https://img.youtube.com/vi/YMg4wP34dS4/maxresdefault.jpg)](https://www.youtube.com/watch?v=YMg4wP34dS4)|[![Watch the video](https://img.youtube.com/vi/8KDqg36Ajqs/maxresdefault.jpg)](https://www.youtube.com/watch?v=8KDqg36Ajqs)|[![Watch the video](https://img.youtube.com/vi/P_YzSvvrf5k/maxresdefault.jpg)](https://www.youtube.com/watch?v=P_YzSvvrf5k)|[![Watch the video](https://i3.ytimg.com/vi/Sc31JmGvMy0/hqdefault.jpg)](https://www.youtube.com/watch?v=Sc31JmGvMy0)|
 
 ## 🤝 Takım üyeleri
 [Berkay Ermiş - @berkayermis](https://github.com/berkayermis) - Frontend / IoT
@@ -135,6 +138,8 @@ modifier onlyAdminOrOwner() x
 [Mehmet Berat Öztürk - BeratOz01](https://github.com/BeratOz01) - Frontend / Backend
 
 [Vusal Ismayilov - @woosal1337](https://github.com/woosal1337) - Solidity / IoT
+
+[Furkan Boyraz - @hellomrbj](https://twitter.com/hellomrbj) - Blockchain / Security
 
 ## 📝 Lisans
 [MIT](https://opensource.org/licenses/MIT): License
