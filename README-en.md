@@ -24,13 +24,13 @@
 <img src="https://img.shields.io/badge/c-%2300599C.svg?style=for-the-badge&logo=c&logoColor=white" />
 </div>
 	
-<h1>❄ Soğuk Tedarik Zinciri</h1>
-<h3>Eczane/ilaç hırsızlığının, nakliye sırasında sıcaklık sapmalarının kaçınılmaz olduğu merkezi veritabanı sistemlerini çözmeye adanmış basit, şeffaf, fakat aynı zamanda verimli tamamen merkeziyetsiz soğuk tedarik zinciri.</h3>
+<h1>❄ Cold Supply Chain</h1>
+<h3>A simple, transparent, but at the same time efficient completely decentralized cold supply chain dedicated to solving centralized database systems where pharmacy/drug theft, temperature deviations during shipping are unavoidable.</h3>
 </div>
 
-## 📦 Kurulum
+## 📦 Installation
 
-### Nodejs ve npm gereksinimleri
+### Nodejs and npm requirements
 ```shell
 git clone https://github.com/medipolchain/supply-chain.git
 
@@ -39,12 +39,12 @@ cd supply-chain
 npm i
 ```
 
-### Python kütüphaneleri
+### Python libraries
 ```shell
 pip install -r requirements.txt
 ```
 
-## 📂 Klasör yapısı
+## 📂 Folder structure
 ```
 +---Arduino-Web3
 +---backend
@@ -85,10 +85,10 @@ pip install -r requirements.txt
 +---test
 ```
 
-## 📍 Akış diyagramı
+## 📍 Flow diagram
 ![Akış diyagramı](src/diagram.png)
 
-## 📝 Veritabanı yapısı
+## 📝 Database structure
 ```js
 address owner x
 mapping(address => bool) public admins; x
@@ -130,17 +130,17 @@ modifier onlyOwner() x
 modifier onlyAdminOrOwner() x
 ```
 
-## 📸 Ekran görüntüleri
+## 📸 Screenshots
 ||||
 | ------------- | ------------- | ------------- |
 |![Screen Shot 2022-05-15 at 07 57 42](https://user-images.githubusercontent.com/77115599/168457954-aa163517-c0e9-4f16-b109-37635dbcf6b1.jpg)|![Screen Shot 2022-05-15 at 07 58 22](https://user-images.githubusercontent.com/77115599/168457955-df9f0f20-0e61-4176-962e-2b74990179b7.jpg)|![Screen Shot 2022-05-15 at 07 58 33](https://user-images.githubusercontent.com/77115599/168457956-82b8e49f-4060-448b-b32c-604f30ddb82f.jpg)|
 
-## 🎥 Ekran kaydı
+## 🎥 Recordings
 |Metamask Connection and Admin Panel Transition|Create Product Through Admin Panel|Mail Notification Subscription|Heat Sensor and Blockchain Transaction IoT|
 | ------------- | ------------- | ------------- | ------------- |
 |[![Watch the video](https://img.youtube.com/vi/YMg4wP34dS4/maxresdefault.jpg)](https://www.youtube.com/watch?v=YMg4wP34dS4)|[![Watch the video](https://img.youtube.com/vi/8KDqg36Ajqs/maxresdefault.jpg)](https://www.youtube.com/watch?v=8KDqg36Ajqs)|[![Watch the video](https://img.youtube.com/vi/P_YzSvvrf5k/maxresdefault.jpg)](https://www.youtube.com/watch?v=P_YzSvvrf5k)|[![Watch the video](https://i3.ytimg.com/vi/Sc31JmGvMy0/hqdefault.jpg)](https://www.youtube.com/watch?v=Sc31JmGvMy0)|
 
-## 🤝 Takım üyeleri
+## 🤝 Team members
 [Berkay Ermiş - @berkayermis](https://github.com/berkayermis) - Frontend / IoT
 
 [Mehmet Berat Öztürk - BeratOz01](https://github.com/BeratOz01) - Frontend / Backend
@@ -149,5 +149,5 @@ modifier onlyAdminOrOwner() x
 
 [Furkan Boyraz - @hellomrbj](https://twitter.com/hellomrbj) - Blockchain / Security
 
-## 📝 Lisans
+## 📝 License
 [MIT](https://opensource.org/licenses/MIT): License
