@@ -11,6 +11,8 @@ describe("Greeter", function () {
 
     const setGreetingTx = await greeter.setGreeting("Hola, mundo!");
 
+    
+    //
     // wait until the transaction is mined
     await setGreetingTx.wait();
 
